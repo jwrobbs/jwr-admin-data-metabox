@@ -38,19 +38,22 @@ function add_custom_dashboard_widget_server_data() {
 		$db_version = "$database-{$db_version} ";
 	}
 
-	$debugging = Debugging_Mode::get_debugging_status();
-
+	$debug      = '';
 	$debug_data = '';
+	$button     = '';
 
-	if ( 'enabled' === $debugging ) {
-		$logging    = Debugging_Mode::get_logging_status();
-		$displaying = Debugging_Mode::get_displaying_status();
+	if ( current_user_can( 'manage_options' ) ) {
+		$debugging = Debugging_Mode::get_debugging_status();
 
-		$logging    = Debugging_Mode::add_symbol( $logging );
-		$displaying = Debugging_Mode::add_symbol( $displaying );
-		$debugging  = Debugging_Mode::add_symbol( $debugging );
+		if ( 'enabled' === $debugging ) {
+			$logging    = Debugging_Mode::get_logging_status();
+			$displaying = Debugging_Mode::get_displaying_status();
 
-		$debug_data .= <<<HTML
+			$logging    = Debugging_Mode::add_symbol( $logging );
+			$displaying = Debugging_Mode::add_symbol( $displaying );
+			$debugging  = Debugging_Mode::add_symbol( $debugging );
+
+			$debug_data .= <<<HTML
 			<div class='data-list'>
 				<div>Debugging</div><div>{$debugging}</div>
 				<div>Logging</div><div>{$logging}</div>
@@ -58,27 +61,28 @@ function add_custom_dashboard_widget_server_data() {
 			</div>
 		HTML;
 
-		$button_text = 'Disable Debugging';
-	} else {
-		$debugging   = Debugging_Mode::add_symbol( $debugging );
-		$debug_data .= <<<HTML
+			$button_text = 'Disable Debugging';
+		} else {
+			$debugging   = Debugging_Mode::add_symbol( $debugging );
+			$debug_data .= <<<HTML
 			<div class='data-list'>
 				<div>Debugging</div><div>{$debugging}</div>
 			</div>
 		HTML;
 
-		$button_text = 'Enable Debugging';
-	}
+			$button_text = 'Enable Debugging';
+		}
 
-	$button = "<button id='debugging-toggle'>$button_text</button>";
+		$button = "<button id='debugging-toggle'>$button_text</button>";
 
-	$debug = <<<HTML
+		$debug = <<<HTML
 		<div class='section'>
 			<h5>Debugging</h5>
 			$debug_data
 			$button
 		</div>
 		HTML;
+	}
 
 	$html = <<<HTML
 		<style>
