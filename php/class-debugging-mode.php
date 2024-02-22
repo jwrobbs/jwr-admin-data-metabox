@@ -56,8 +56,7 @@ class Debugging_Mode {
 	private static function evaluate_constant( $constant ) {
 		if ( ! \defined( $constant ) ) {
 			return 'unset';
-		}
-		if ( \constant( $constant ) ) {
+		} elseif ( \constant( $constant ) ) {
 			return 'enabled';
 		} else {
 			return 'disabled';
