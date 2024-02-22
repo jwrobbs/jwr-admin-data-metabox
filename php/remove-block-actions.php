@@ -98,4 +98,4 @@ function remove_block_actions() {
 		\remove_action( 'init', $callback );
 	}
 }
-add_action( 'init', __NAMESPACE__ . '\remove_block_actions', 1 );
+add_action( 'after_setup_theme', __NAMESPACE__ . '\remove_block_actions', 1 );
