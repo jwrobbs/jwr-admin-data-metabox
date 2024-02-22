@@ -30,8 +30,6 @@ function toggle_debugging() {
 		die();
 	}
 
-	\SimpleLogger()->info( 'Debugging nonce passed: ' . $nonce_verification );
-
 	Debugging_Mode::toggle_debugging();
 	die();
 }
