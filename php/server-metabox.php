@@ -38,17 +38,17 @@ function add_custom_dashboard_widget_server_data() {
 		$db_version = "$database-{$db_version} ";
 	}
 
-	$debugging = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
+	$debugging = Debugging_Mode::get_debugging_status();
 
 	$debug_data = '';
-	if ( $debugging ) {
-		$logging    = \defined( 'WP_DEBUG_LOG' ) && \WP_DEBUG_LOG;
-		$displaying = \defined( 'WP_DEBUG_DISPLAY' ) && \WP_DEBUG_DISPLAY;
 
-		$logging    = $logging ? '⚠️ enabled' : '👍disabled';
-		$displaying = $displaying ? '⚠️ enabled' : '👍disabled';
+	if ( 'enabled' === $debugging ) {
+		$logging    = Debugging_Mode::get_logging_status();
+		$displaying = Debugging_Mode::get_displaying_status();
 
-		$debugging = '⚠️ enabled';
+		$logging    = Debugging_Mode::add_symbol( $logging );
+		$displaying = Debugging_Mode::add_symbol( $displaying );
+		$debugging  = Debugging_Mode::add_symbol( $debugging );
 
 		$debug_data .= <<<HTML
 			<div class='data-list'>
@@ -56,20 +56,27 @@ function add_custom_dashboard_widget_server_data() {
 				<div>Logging</div><div>{$logging}</div>
 				<div>Displaying</div><div>{$displaying}</div>
 			</div>
-			HTML;
+		HTML;
+
+		$button_text = 'Disable Debugging';
 	} else {
-		$debugging   = '👍 disabled';
+		$debugging   = Debugging_Mode::add_symbol( $debugging );
 		$debug_data .= <<<HTML
 			<div class='data-list'>
 				<div>Debugging</div><div>{$debugging}</div>
 			</div>
-			HTML;
+		HTML;
+
+		$button_text = 'Enable Debugging';
 	}
+
+	$button = "<button id='debugging-toggle'>$button_text</button>";
 
 	$debug = <<<HTML
 		<div class='section'>
 			<h5>Debugging</h5>
 			$debug_data
+			$button
 		</div>
 		HTML;
 
@@ -87,6 +94,15 @@ function add_custom_dashboard_widget_server_data() {
 			.jwr-dev-info-container .data-list{
 				display: grid;
 				grid-template-columns: 100px 1fr;
+			}
+			#debugging-toggle {
+				margin: .5em 0;
+				padding: .25em;
+				color: white;
+				background-color: #0073aa;
+			}
+			#debugging-toggle:hover {
+				background-color: #0099ff;
 			}
 		</style>
 		<div class='jwr-dev-info-container'>
