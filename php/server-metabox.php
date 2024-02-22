@@ -40,32 +40,73 @@ function add_custom_dashboard_widget_server_data() {
 
 	$debugging = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
 
+	$debug_data = '';
 	if ( $debugging ) {
 		$logging    = \defined( 'WP_DEBUG_LOG' ) && \WP_DEBUG_LOG;
 		$displaying = \defined( 'WP_DEBUG_DISPLAY' ) && \WP_DEBUG_DISPLAY;
 
-		$debug  = '';
-		$debug .= '<p style="margin: 1rem 0 0;"><strong>Debugging</strong></p>';
-		$debug .= '<ul style="margin:0;">';
-		$debug .= '<li>Debugging is <code>enabled</code></li>';
-		$debug .= '<li>Logging is <code>' . ( $logging ? 'enabled' : 'disabled' ) . '</code></li>';
-		$debug .= '<li>Displaying is <code>' . ( $displaying ? 'enabled' : 'disabled' ) . '</code></li>';
-		$debug .= '</ul>';
+		$logging    = $logging ? '⚠️ enabled' : '👍disabled';
+		$displaying = $displaying ? '⚠️ enabled' : '👍disabled';
+
+		$debugging = '⚠️ enabled';
+
+		$debug_data .= <<<HTML
+			<div class='data-list'>
+				<div>Debugging</div><div>{$debugging}</div>
+				<div>Logging</div><div>{$logging}</div>
+				<div>Displaying</div><div>{$displaying}</div>
+			</div>
+			HTML;
+	} else {
+		$debugging   = '👍 disabled';
+		$debug_data .= <<<HTML
+			<div class='data-list'>
+				<div>Debugging</div><div>{$debugging}</div>
+			</div>
+			HTML;
 	}
 
+	$debug = <<<HTML
+		<div class='section'>
+			<h5>Debugging</h5>
+			$debug_data
+		</div>
+		HTML;
+
 	$html = <<<HTML
-		<div class="built-panel">
-			<p style="margin-top:0;"><strong>Developer Info</strong></p>
-			<ul style="margin:0;">
-				<li>PHP <code>{$php}</code></li>
-				<li>Database <code>{$db_version}</code></li>
-				<li>WordPress <code>{$wp}</code></li>
-			</ul>
+		<style>
+			html .jwr-dev-info-container * {
+				font-size: 1rem;
+			}
+			.jwr-dev-info-container h5 {
+				font-size: 1rem;
+				font-weight: bold;
+				text-transform: uppercase;
+				margin: 1rem 0 .25rem;
+			}
+			.jwr-dev-info-container .data-list{
+				display: grid;
+				grid-template-columns: 100px 1fr;
+			}
+		</style>
+		<div class='jwr-dev-info-container'>
+			<div class='section'>
+				<h5>Server Data</h5>
+				<div class='data-list'>
+					<div>PHP</div><div>{$php}</div>
+					<div>Database</div><div>{$db_version}</div>
+					<div>WordPress</div><div>{$wp}</div>
+				</div>
+			</div>
 			$debug
 		</div>
 		HTML;
 
-		echo \wp_kses_post( $html );
+		$normal_allowed_html          = \wp_kses_allowed_html( 'post' );
+		$custom_allowed_html          = $normal_allowed_html;
+		$custom_allowed_html['style'] = array();
+
+		echo \wp_kses( $html, $custom_allowed_html );
 }
 
 /**
@@ -76,7 +117,7 @@ function add_custom_dashboard_widget_server_data() {
 function add_server_data_db_widget() {
 	\wp_add_dashboard_widget(
 		'jwr_server_data_dashboard_widget', // Widget slug.
-		'Server Data',   // Widget title.
+		'Developer Info',   // Widget title.
 		__NAMESPACE__ . '\add_custom_dashboard_widget_server_data'  // Display function.
 	);
 }
