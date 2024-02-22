@@ -36,12 +36,15 @@ require_once 'php/class-debugging-mode.php';
  * @return void
  */
 function enqueue_admin_metabox_scripts() {
-	$file = plugin_dir_url( __FILE__ ) . 'js/debug-toggle.js';
+	$file = plugin_dir_path( __FILE__ ) . 'js/debug-toggle.js';
+
+	$filetime = filemtime( $file );
+
 	wp_enqueue_script(
 		'jwr-admin-metabox',
 		$file,
 		array(),
-		filemtime( $file ),
+		$filetime,
 		true
 	);
 }
