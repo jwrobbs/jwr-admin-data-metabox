@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || die();
  * @return void
  */
 function toggle_debugging() {
-	\SimpleLogger()->info( 'Toggling debugging: ajax triggered.' );
 	Debugging_Mode::toggle_debugging();
 	die();
 }

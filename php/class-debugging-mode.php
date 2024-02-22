@@ -126,7 +126,6 @@ class Debugging_Mode {
 	 * @return void
 	 */
 	private static function enable_debugging() {
-		\SimpleLogger()->info( 'Enabling debugging.' );
 
 		$debug_enabled       = "define( 'WP_DEBUG', true );";
 		$debug_disabled      = "define( 'WP_DEBUG', false );";
@@ -145,7 +144,6 @@ class Debugging_Mode {
 		$config_file = $wp_filesystem->get_contents( $config_file_path );
 
 		if ( ! \str_contains( $config_file, $debug_disabled ) ) {
-			\SimpleLogger()->info( 'Debugging already enabled.' );
 			return;
 		}
 
