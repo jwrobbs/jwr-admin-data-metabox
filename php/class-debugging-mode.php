@@ -83,11 +83,6 @@ class Debugging_Mode {
 	 * @return void
 	 */
 	public static function toggle_debugging() {
-		\SimpleLogger()->info( 'Toggling debugging: static fn called.' );
-		// If debugging is enabled, disable it.
-		// If debugging is disabled, enable it.
-			// If logging is disabled or unset, enable it.
-			// If displaying is disabled or unset, enable it.
 
 		$debugging = self::get_debugging_status();
 
@@ -106,7 +101,13 @@ class Debugging_Mode {
 	private static function disable_debugging() {
 		$config_file_path = ABSPATH . 'wp-config.php';
 
-		$config_file    = \file_get_contents( $config_file_path );
+		global $wp_filesystem;
+		if ( null === $wp_filesystem ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		$config_file    = $wp_filesystem->get_contents( $config_file_path );
 		$debug_enabled  = "define( 'WP_DEBUG', true )";
 		$debug_disabled = "define( 'WP_DEBUG', false )";
 
@@ -116,7 +117,7 @@ class Debugging_Mode {
 
 		$config_file = \str_replace( $debug_enabled, $debug_disabled, $config_file );
 
-		$res = \file_put_contents( $config_file_path, $config_file );
+		$res = $wp_filesystem->put_contents( $config_file_path, $config_file );
 	}
 
 	/**
@@ -135,7 +136,13 @@ class Debugging_Mode {
 		$displaying_disabled = "define( 'WP_DEBUG_DISPLAY', false );";
 
 		$config_file_path = ABSPATH . 'wp-config.php';
-		$config_file      = \file_get_contents( $config_file_path );
+
+		global $wp_filesystem;
+		if ( null === $wp_filesystem ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+		$config_file = $wp_filesystem->get_contents( $config_file_path );
 
 		if ( ! \str_contains( $config_file, $debug_disabled ) ) {
 			\SimpleLogger()->info( 'Debugging already enabled.' );
@@ -163,6 +170,6 @@ class Debugging_Mode {
 			$config_file = \str_replace( $logging_enabled, $logging_enabled . "\n" . $displaying_enabled, $config_file );
 		}
 
-		$res = \file_put_contents( $config_file_path, $config_file );
+		$res = $wp_filesystem->put_contents( $config_file_path, $config_file );
 	}
 }
