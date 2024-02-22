@@ -50,4 +50,24 @@ function enqueue_admin_metabox_scripts() {
 	);
 }
 
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\enqueue_admin_metabox_scripts' );
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\enqueue_admin_metabox_scripts', 10 );
+
+/**
+ * Add nonce
+ *
+ * @return void
+ */
+function add_nonce() {
+	$nonce = \wp_create_nonce( 'admin_metabox_nonce' );
+
+	\wp_localize_script(
+		'jwr-admin-metabox',
+		'ajax_object',
+		array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => $nonce,
+		)
+	);
+}
+
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\add_nonce', 12 );

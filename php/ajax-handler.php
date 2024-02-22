@@ -18,8 +18,23 @@ defined( 'ABSPATH' ) || die();
  * @return void
  */
 function toggle_debugging() {
+	if ( ! isset( $_POST['nonce'] ) ) {
+		\SimpleLogger()->error( 'Nonce not set. (Disable Debug button)' );
+		die();
+	}
+
+	$nonce_verification = wp_verify_nonce( $_POST['nonce'], 'admin_metabox_nonce' ); // phpcs:ignore
+
+	if ( ! $nonce_verification ) {
+		\SimpleLogger()->error( 'Nonce verification failed. (Disable Debug button)' );
+		die();
+	}
+
+	\SimpleLogger()->info( 'Debugging nonce passed: ' . $nonce_verification );
+
 	Debugging_Mode::toggle_debugging();
 	die();
 }
 
 add_action( 'wp_ajax_toggle_debugging', __NAMESPACE__ . '\toggle_debugging' );
+add_action( 'wp_ajax_nopriv_toggle_debugging', __NAMESPACE__ . '\toggle_debugging' );

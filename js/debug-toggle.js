@@ -6,6 +6,7 @@ jQuery(document).ready(function ($) {
 			type: "POST",
 			data: {
 				action: "toggle_debugging",
+				nonce: ajax_object.nonce,
 			},
 			success: function (response) {
 				// Reload the main admin page
