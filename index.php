@@ -25,6 +25,7 @@ defined( 'ABSPATH' ) || die();
 require_once 'php/admin-metabox-cleanup.php';
 require_once 'php/ajax-handler.php';
 require_once 'php/git-metabox.php';
+require_once 'php/remove-block-actions.php';
 require_once 'php/server-metabox.php';
 
 // Remove after setting up autoloder.
