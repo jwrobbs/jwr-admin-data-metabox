@@ -38,6 +38,21 @@ function add_custom_dashboard_widget_server_data() {
 		$db_version = "$database-{$db_version} ";
 	}
 
+	$debugging = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
+
+	if ( $debugging ) {
+		$logging    = \defined( 'WP_DEBUG_LOG' ) && \WP_DEBUG_LOG;
+		$displaying = \defined( 'WP_DEBUG_DISPLAY' ) && \WP_DEBUG_DISPLAY;
+
+		$debug  = '';
+		$debug .= '<p style="margin: 1rem 0 0;"><strong>Debugging</strong></p>';
+		$debug .= '<ul style="margin:0;">';
+		$debug .= '<li>Debugging is <code>enabled</code></li>';
+		$debug .= '<li>Logging is <code>' . ( $logging ? 'enabled' : 'disabled' ) . '</code></li>';
+		$debug .= '<li>Displaying is <code>' . ( $displaying ? 'enabled' : 'disabled' ) . '</code></li>';
+		$debug .= '</ul>';
+	}
+
 	$html = <<<HTML
 		<div class="built-panel">
 			<p style="margin-top:0;"><strong>Developer Info</strong></p>
@@ -46,6 +61,7 @@ function add_custom_dashboard_widget_server_data() {
 				<li>Database <code>{$db_version}</code></li>
 				<li>WordPress <code>{$wp}</code></li>
 			</ul>
+			$debug
 		</div>
 		HTML;
 
