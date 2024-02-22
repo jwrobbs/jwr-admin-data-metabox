@@ -37,8 +37,9 @@ require_once 'php/class-debugging-mode.php';
  */
 function enqueue_admin_metabox_scripts() {
 	$file_url  = plugin_dir_url( __FILE__ ) . 'js/debug-toggle.js';
-	$file_path = __DIR__ . 'js/debug-toggle.js';
+	$file_path = __DIR__ . '/js/debug-toggle.js';
 	$filetime  = filemtime( $file_path );
+	\SimpleLogger()->info( 'Enqueueing admin metabox scripts.' . $filetime );
 
 	wp_enqueue_script(
 		'jwr-admin-metabox',
