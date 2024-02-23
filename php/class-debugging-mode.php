@@ -124,6 +124,12 @@ class Debugging_Mode {
 
 		$config_file = $wp_filesystem->get_contents( $config_file_path );
 
+		if ( ! \str_contains( $config_file, self::$debug_strings['debug_disabled'] )
+		&& ! \str_contains( $config_file, self::$debug_strings['debug_enabled'] ) ) {
+			$config_file = \str_replace( '/* Add any custom values between this line and the "stop editing" line. */', '/* Add any custom values between this line and the "stop editing" line. */' . "\n" . self::$debug_strings['debug_disabled'], $config_file );
+
+			$res = $wp_filesystem->put_contents( $config_file_path, $config_file );
+		}
 		if ( ! \str_contains( $config_file, self::$debug_strings['debug_enabled'] ) ) {
 			return;
 		}
