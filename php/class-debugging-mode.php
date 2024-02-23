@@ -16,6 +16,21 @@ defined( 'ABSPATH' ) || die();
  * Class Debugging_Mode
  */
 class Debugging_Mode {
+
+	/**
+	 * Debug strings.
+	 *
+	 * @var array
+	 */
+	private static $debug_strings = array(
+		'debug_enabled'       => "define( 'WP_DEBUG', true );",
+		'debug_disabled'      => "define( 'WP_DEBUG', false );",
+		'logging_enabled'     => "define( 'WP_DEBUG_LOG', true );",
+		'logging_disabled'    => "define( 'WP_DEBUG_LOG', false );",
+		'displaying_enabled'  => "define( 'WP_DEBUG_DISPLAY', true );",
+		'displaying_disabled' => "define( 'WP_DEBUG_DISPLAY', false );",
+	);
+
 	/**
 	 * Get debugging status.
 	 * Possible values: 'enabled', 'disabled', 'unset'.
@@ -107,15 +122,13 @@ class Debugging_Mode {
 			WP_Filesystem();
 		}
 
-		$config_file    = $wp_filesystem->get_contents( $config_file_path );
-		$debug_enabled  = "define( 'WP_DEBUG', true )";
-		$debug_disabled = "define( 'WP_DEBUG', false )";
+		$config_file = $wp_filesystem->get_contents( $config_file_path );
 
-		if ( ! \str_contains( $config_file, $debug_enabled ) ) {
+		if ( ! \str_contains( $config_file, self::$debug_strings['debug_enabled'] ) ) {
 			return;
 		}
 
-		$config_file = \str_replace( $debug_enabled, $debug_disabled, $config_file );
+		$config_file = \str_replace( self::$debug_strings['debug_enabled'], self::$debug_strings['debug_disabled'], $config_file );
 
 		$res = $wp_filesystem->put_contents( $config_file_path, $config_file );
 	}
@@ -127,13 +140,6 @@ class Debugging_Mode {
 	 */
 	private static function enable_debugging() {
 
-		$debug_enabled       = "define( 'WP_DEBUG', true );";
-		$debug_disabled      = "define( 'WP_DEBUG', false );";
-		$logging_enabled     = "define( 'WP_DEBUG_LOG', true );";
-		$logging_disabled    = "define( 'WP_DEBUG_LOG', false );";
-		$displaying_enabled  = "define( 'WP_DEBUG_DISPLAY', true );";
-		$displaying_disabled = "define( 'WP_DEBUG_DISPLAY', false );";
-
 		$config_file_path = ABSPATH . 'wp-config.php';
 
 		global $wp_filesystem;
@@ -143,29 +149,29 @@ class Debugging_Mode {
 		}
 		$config_file = $wp_filesystem->get_contents( $config_file_path );
 
-		if ( ! \str_contains( $config_file, $debug_disabled ) ) {
+		if ( ! \str_contains( $config_file, self::$debug_strings['debug_disabled'] ) ) {
 			return;
 		}
 
 		// Enable debugging.
-		$config_file = \str_replace( $debug_disabled, $debug_enabled, $config_file );
+		$config_file = \str_replace( self::$debug_strings['debug_disabled'], self::$debug_strings['debug_enabled'], $config_file );
 
 		// Check for logging. Enable or add.
-		if ( \str_contains( $config_file, $logging_enabled ) ) {
+		if ( \str_contains( $config_file, self::$debug_strings['logging_enabled'] ) ) {
 			$config_file = $config_file;
-		} elseif ( \str_contains( $config_file, $logging_disabled ) ) {
-			$config_file = \str_replace( $logging_disabled, $logging_enabled, $config_file );
+		} elseif ( \str_contains( $config_file, self::$debug_strings['logging_disabled'] ) ) {
+			$config_file = \str_replace( self::$debug_strings['logging_disabled'], self::$debug_strings['logging_enabled'], $config_file );
 		} else {
-			$config_file = \str_replace( $debug_enabled, $debug_enabled . "\n" . $logging_enabled, $config_file );
+			$config_file = \str_replace( self::$debug_strings['debug_enabled'], self::$debug_strings['debug_enabled'] . "\n" . self::$debug_strings['logging_enabled'], $config_file );
 		}
 
 		// Check for displaying. Enable or add.
-		if ( \str_contains( $config_file, $displaying_enabled ) ) {
+		if ( \str_contains( $config_file, self::$debug_strings['displaying_enabled'] ) ) {
 			$config_file = $config_file;
-		} elseif ( \str_contains( $config_file, $displaying_disabled ) ) {
-			$config_file = \str_replace( $displaying_disabled, $displaying_enabled, $config_file );
+		} elseif ( \str_contains( $config_file, self::$debug_strings['displaying_disabled'] ) ) {
+			$config_file = \str_replace( self::$debug_strings['displaying_disabled'], self::$debug_strings['displaying_enabled'], $config_file );
 		} else {
-			$config_file = \str_replace( $logging_enabled, $logging_enabled . "\n" . $displaying_enabled, $config_file );
+			$config_file = \str_replace( self::$debug_strings['logging_enabled'], self::$debug_strings['logging_enabled'] . "\n" . self::$debug_strings['displaying_enabled'], $config_file );
 		}
 
 		$res = $wp_filesystem->put_contents( $config_file_path, $config_file );
