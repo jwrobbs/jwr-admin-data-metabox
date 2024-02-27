@@ -86,9 +86,9 @@ class Debugging_Mode {
 	 */
 	public static function add_symbol( $status ) {
 		if ( 'disabled' === $status ) {
-			return '👍 disabled';
+			return '&#x1f7e2; disabled';
 		} else {
-			return '⚠️ ' . $status;
+			return '&#10060; ' . $status;
 		}
 	}
 
