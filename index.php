@@ -2,7 +2,7 @@
 /**
  * Plugin Name: JWR's Admin Metabox
  * Description: Adds a metabox to the WP admin dashboard with server and debug data.
- * Version: 0.5.0
+ * Version: 0.7.0
  * Author: Josh Robbs
  * Author URI: https://joshrobbs.com
  *
@@ -14,7 +14,7 @@
  *
  * @author Josh Robbs <josh@joshrobbs.com>
  * @package JWR_admin_metabox
- * @version 0.5.0
+ * @version 0.7.0
  * @since   2024-02-22
  */
 
