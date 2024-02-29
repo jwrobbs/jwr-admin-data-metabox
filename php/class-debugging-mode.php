@@ -29,6 +29,7 @@ class Debugging_Mode {
 		'logging_disabled'    => "define( 'WP_DEBUG_LOG', false );",
 		'displaying_enabled'  => "define( 'WP_DEBUG_DISPLAY', true );",
 		'displaying_disabled' => "define( 'WP_DEBUG_DISPLAY', false );",
+		'error_reporting'     => 'error_reporting( E_ALL & ~E_WARNING & ~E_DEPRECATED & ~E_USER_DEPRECATED & ~E_NOTICE );',
 	);
 
 	/**
@@ -124,6 +125,7 @@ class Debugging_Mode {
 
 		$config_file = $wp_filesystem->get_contents( $config_file_path );
 
+		// DEBUG constants.
 		if ( ! \str_contains( $config_file, self::$debug_strings['debug_disabled'] )
 		&& ! \str_contains( $config_file, self::$debug_strings['debug_enabled'] ) ) {
 			$config_file = \str_replace( '/* Add any custom values between this line and the "stop editing" line. */', '/* Add any custom values between this line and the "stop editing" line. */' . "\n" . self::$debug_strings['debug_disabled'], $config_file );
@@ -135,6 +137,13 @@ class Debugging_Mode {
 		}
 
 		$config_file = \str_replace( self::$debug_strings['debug_enabled'], self::$debug_strings['debug_disabled'], $config_file );
+
+		// PHP error reporting.
+		$config_file = \str_replace(
+			self::$debug_strings['error_reporting'] . "\n",
+			'',
+			$config_file
+		);
 
 		$res = $wp_filesystem->put_contents( $config_file_path, $config_file );
 	}
@@ -178,6 +187,15 @@ class Debugging_Mode {
 			$config_file = \str_replace( self::$debug_strings['displaying_disabled'], self::$debug_strings['displaying_enabled'], $config_file );
 		} else {
 			$config_file = \str_replace( self::$debug_strings['logging_enabled'], self::$debug_strings['logging_enabled'] . "\n" . self::$debug_strings['displaying_enabled'], $config_file );
+		}
+
+		// PHP error reporting.
+		if ( ! \str_contains( $config_file, self::$debug_strings['error_reporting'] ) ) {
+			$config_file = \str_replace(
+				'/* Add any custom values between this line and the "stop editing" line. */' . "\n",
+				'/* Add any custom values between this line and the "stop editing" line. */' . "\n" . self::$debug_strings['error_reporting'] . "\n",
+				$config_file
+			);
 		}
 
 		$res = $wp_filesystem->put_contents( $config_file_path, $config_file );
