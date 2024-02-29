@@ -43,7 +43,7 @@ function add_custom_dashboard_widget_server_data() {
 	$button     = '';
 
 	// Crawlability.
-	$crawlability = \get_option( 'blog_public' ) ? 'Enabled' : 'Blocked';
+	$crawlability = \get_option( 'blog_public' ) ? '&#x1f7e2; Enabled' : '&#10060; Blocked';
 	$crawl_text   = <<<HTML
 		<div>
 			<h5>Crawlability</h5>
