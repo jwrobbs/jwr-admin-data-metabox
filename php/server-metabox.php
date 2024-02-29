@@ -4,7 +4,7 @@
  *
  * @author Josh Robbs <josh@joshrobbs.com>
  * @package JWR_admin_metabox
- * @version 0.5.0
+ * @version 0.7.0
  * @since   2024-02-22
  */
 
@@ -25,7 +25,7 @@ function add_custom_dashboard_widget_server_data() {
 	// Global.
 	global $wpdb;
 
-	// Get information for developers.
+	// Server data.
 	$php         = phpversion();
 	$db_version  = $wpdb->db_version();
 	$wp          = get_bloginfo( 'version' );
@@ -42,6 +42,17 @@ function add_custom_dashboard_widget_server_data() {
 	$debug_data = '';
 	$button     = '';
 
+	// Crawlability.
+	$crawlability = \get_option( 'blog_public' ) ? 'Enabled' : 'Blocked';
+	$crawl_text   = <<<HTML
+		<div>
+			<h5>Crawlability</h5>
+			<div class='data-list'>
+				<div>Bot crawling</div><div>{$crawlability}</div>
+			</div>
+		</div>
+	HTML;
+	// Debugging.
 	if ( current_user_can( 'manage_options' ) ) {
 		$debugging = Debugging_Mode::get_debugging_status();
 
@@ -118,6 +129,7 @@ function add_custom_dashboard_widget_server_data() {
 					<div>WordPress</div><div>{$wp}</div>
 				</div>
 			</div>
+			$crawl_text
 			$debug
 		</div>
 		HTML;
