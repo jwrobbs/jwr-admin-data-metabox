@@ -14,7 +14,7 @@
  *
  * @author Josh Robbs <josh@joshrobbs.com>
  * @package JWR_admin_metabox
- * @version 0.7.0
+ * @version 0.7.1
  * @since   2024-02-22
  */
 
