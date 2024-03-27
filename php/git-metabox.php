@@ -101,9 +101,20 @@ function echo_git_data( $dir, $mode = 'plugin' ) {
 	if ( ! function_exists( 'get_filesystem_method' ) ) {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 	}
-	global $wp_filesystem;
 
-	$config = $wp_filesystem->get_contents( $git_dir . '/config' );
+	$config_file = $git_dir . '/config';
+	if ( ! file_exists( $config_file ) ) {
+		echo wp_kses_post( "Error: {$config_file} does not exist." );
+		return;
+	}
+
+	global $wp_filesystem;
+	if ( null === $wp_filesystem ) {
+		require_once ABSPATH . '/wp-admin/includes/file.php';
+		WP_Filesystem();
+	}
+
+	$config = $wp_filesystem->get_contents( $config_file );
 
 	// URL.
 	$match = preg_match( '/url = (.*)/', $config, $matches );
